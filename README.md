@@ -92,7 +92,8 @@ This is a relative spectral peak separation measured using the GNU Radio QT GUI 
 - Channel selection using a low-pass filter
 - Spectral analysis and measurement of unwanted-signal suppression
 
-**Flowgraph:** `05_multi_signal_receiver.grc`
+### Experimental Flowgraph and Output
+![Multi-Signal Receiver Flowgraph and Spectrum](multi_signal_receiver_result.png.png)
 
 ## Future Work
 - Multi-signal digital downconversion
