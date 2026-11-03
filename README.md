@@ -95,6 +95,62 @@ This is a relative spectral peak separation measured using the GNU Radio QT GUI 
 ### Experimental Flowgraph and Output
 ![Multi-Signal Receiver Flowgraph and Spectrum](multi_signal_receiver_result.png.png)
 
+
+## Experiment 3: Amplitude Modulation (AM)
+
+### Objective
+To implement a conventional AM transmitter in GNU Radio and analyze the modulated signal in the time and frequency domains.
+
+### GNU Radio Implementation
+The AM transmitter was developed using:
+- Two Signal Source blocks (Float)
+- Add Const block
+- Multiply block
+- QT GUI Time Sink
+- QT GUI Frequency Sink
+
+### Simulation Parameters
+| Parameter | Value |
+|---|---|
+| Sampling rate | 32 kS/s |
+| Carrier frequency | 5 kHz |
+| Message frequency | 200 Hz |
+| Message amplitude | 0.5 |
+| Carrier amplitude | 1 |
+| DC offset | 1 |
+| Modulation index | 50% |
+
+### AM Signal Equation
+
+`s(t) = [1 + 0.5 cos(2π × 200t)] cos(2π × 5000t)`
+
+### Experimental Results
+**Time Domain:** The carrier oscillates at 5 kHz while its amplitude envelope follows the 200 Hz message. The envelope magnitude varies between 0.5 and 1.5.
+
+**Frequency Domain:** Three positive-frequency components were observed:
+
+| Component | Frequency |
+|---|---|
+| Lower sideband (LSB) | 4.8 kHz |
+| Carrier | 5.0 kHz |
+| Upper sideband (USB) | 5.2 kHz |
+
+Corresponding negative-frequency components appear because the AM signal is real-valued.
+
+### AM Waveform and Frequency Spectrum
+
+![AM Waveform and Frequency Spectrum](am_modulation_result.png.png)
+
+### Key Learnings
+- Generated a conventional AM signal using GNU Radio.
+- Observed the message envelope in the time domain.
+- Identified the carrier and two sidebands in the frequency spectrum.
+- Understood the relationship between message frequency and sideband spacing.
+- Learned how the modulation index affects the amplitude envelope.
+
+### Next Step
+Implement AM demodulation to recover the original message signal.
+
 ## Future Work
 - Multi-signal digital downconversion
 - Signal bandwidth and spectral analysis
