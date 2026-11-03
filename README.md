@@ -45,6 +45,55 @@ These values are relative spectral measurements, not calibrated RF power reading
 - Low-pass filtering can suppress signals outside the desired passband.
 - Digital downconversion is a fundamental operation in SDR receivers.
 
+## Experiment 2: Multi-Signal Receiver and Channel Selection
+
+### Objective
+Simulate the reception of three complex signals and select one desired signal using digital downconversion and low-pass filtering.
+
+### GNU Radio Flowgraph
+Three complex Signal Source blocks are combined using an Add block. The combined signal is multiplied by a complex local oscillator and passed through a Low Pass Filter before spectral analysis.
+
+**Signal processing chain:**
+
+`3 Signal Sources → Add → Multiply (LO) → Low Pass Filter → QT GUI Frequency Sink`
+
+### Configuration
+- Sample rate: 32 kS/s
+- Wanted signal: +5 kHz
+- Unwanted signals: +1 kHz and +9 kHz
+- Local oscillator: −5 kHz
+- Low-pass filter cutoff: 1 kHz
+- Transition width: 500 Hz
+- Filter window: Hamming
+
+### Experimental Results
+
+| Input Signal | Frequency After Mixing | Measured Spectrum Level | Result |
+|---|---|---|---|
+| +1 kHz | −4 kHz | −80.12 dB | Suppressed |
+| +5 kHz | 0 kHz | −8.2 dB | Passed |
+| +9 kHz | +4 kHz | −80.12 dB | Suppressed |
+
+### Analysis
+
+The complex mixer shifted the desired +5 kHz signal to 0 Hz while shifting the two unwanted signals to −4 kHz and +4 kHz.
+
+The low-pass filter preserved the desired signal near 0 Hz and strongly suppressed the unwanted signals.
+
+The measured separation between the wanted peak and each unwanted peak was:
+
+**−8.2 − (−80.12) = 71.92 dB**
+
+This is a relative spectral peak separation measured using the GNU Radio QT GUI Frequency Sink, not a calibrated receiver rejection measurement.
+
+### Key Learnings
+- Combining multiple complex signals to simulate simultaneous reception
+- Digital frequency shifting using a complex local oscillator
+- Channel selection using a low-pass filter
+- Spectral analysis and measurement of unwanted-signal suppression
+
+**Flowgraph:** `05_multi_signal_receiver.grc`
+
 ## Future Work
 - Multi-signal digital downconversion
 - Signal bandwidth and spectral analysis
