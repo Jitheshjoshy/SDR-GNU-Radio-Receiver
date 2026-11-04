@@ -148,8 +148,73 @@ Corresponding negative-frequency components appear because the AM signal is real
 - Understood the relationship between message frequency and sideband spacing.
 - Learned how the modulation index affects the amplitude envelope.
 
-### Next Step
-Implement AM demodulation to recover the original message signal.
+## Experiment 4: Coherent AM Demodulation
+
+### Objective
+To implement a coherent AM receiver in GNU Radio and recover the original 200 Hz message from a 5 kHz amplitude-modulated carrier.
+
+### GNU Radio Implementation
+The experiment extends the AM transmitter developed in Experiment 3. The receiver uses a synchronized 5 kHz local oscillator, a Multiply block, a low-pass filter, DC offset correction, and amplitude scaling.
+
+**Receiver processing chain:**
+
+`AM signal → Multiply with 5 kHz LO → Low Pass Filter → Add Const (-0.5) → Multiply Const (2) → Recovered Message`
+
+### Simulation Parameters
+
+| Parameter | Value |
+|---|---|
+| Sample rate | 32 kS/s |
+| Carrier frequency | 5 kHz |
+| Message frequency | 200 Hz |
+| Original message amplitude | 0.5 |
+| Modulation index | 50% |
+| Receiver LO frequency | 5 kHz |
+| Low-pass filter cutoff | 1 kHz |
+| Filter transition width | 500 Hz |
+| Filter window | Hamming |
+| DC offset correction | -0.5 |
+| Amplitude scaling | 2 |
+
+### Demodulation Principle
+The transmitted AM signal is:
+
+`s(t) = [1 + 0.5 cos(2π × 200t)] cos(2π × 5000t)`
+
+Multiplying the AM signal by a synchronized 5 kHz cosine and applying a low-pass filter gives approximately:
+
+`y(t) = 0.5 + 0.25 cos(2π × 200t)`
+
+Removing the DC offset and restoring the amplitude gives:
+
+`m_recovered(t) = 2[y(t) - 0.5] = 0.5 cos(2π × 200t)`
+
+The low-pass filter introduces a time delay, so the recovered waveform may be phase-shifted relative to the original message.
+
+### Experimental Results
+- Successfully recovered the original 200 Hz message frequency.
+- Observed a demodulated waveform with a DC offset of approximately 0.5 and an amplitude of approximately 0.25.
+- Removed the DC offset using Add Const (-0.5).
+- Restored the message amplitude using Multiply Const (2).
+- Obtained a recovered cosine waveform with an amplitude of approximately 0.5.
+
+### GNU Radio Flowgraph
+
+![Coherent AM Demodulation Flowgraph](AM%20demodulated%20flowgraph.png)
+
+### Demodulation Results
+
+![Coherent AM Demodulation Results](AM_demodulated_reult.png)
+
+### Key Learnings
+- Implemented coherent AM demodulation using GNU Radio.
+- Understood how multiplication with a synchronized local oscillator shifts signal components to baseband.
+- Used a low-pass filter to remove high-frequency mixing products.
+- Removed DC offset and restored the original message amplitude.
+- Observed the effect of FIR filter delay on the recovered waveform.
+
+### Next Steps
+Compare the original and recovered messages, investigate synchronization errors, and explore practical reception using RTL-SDR hardware.
 
 ## Future Work
 - Multi-signal digital downconversion
