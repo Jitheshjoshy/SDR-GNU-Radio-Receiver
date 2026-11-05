@@ -213,8 +213,130 @@ The low-pass filter introduces a time delay, so the recovered waveform may be ph
 - Removed DC offset and restored the original message amplitude.
 - Observed the effect of FIR filter delay on the recovered waveform.
 
-### Next Steps
-Compare the original and recovered messages, investigate synchronization errors, and explore practical reception using RTL-SDR hardware.
+## Experiment 5: FM Modulation and Spectrum Analysis
+
+### Objective
+Generate a frequency-modulated (FM) signal using GNU Radio and analyze its frequency spectrum.
+
+### GNU Radio Configuration
+
+| Parameter | Value |
+|---|---|
+| Sample Rate | 32 kS/s |
+| Message Frequency | 200 Hz |
+| Message Amplitude | 1 |
+| FM Modulator Sensitivity | 0.5 rad/sample |
+| FFT Size | 2048 |
+| Modulation Type | Frequency Modulation (FM) |
+
+### Theory
+
+In frequency modulation, the instantaneous frequency of the carrier changes according to the amplitude of the message signal.
+
+The message signal is:
+
+\[
+m(t)=\cos(2\pi \cdot 200t)
+\]
+
+The frequency deviation is calculated as:
+
+\[
+\Delta f=\frac{k f_s}{2\pi}
+\]
+
+where:
+- \(k=0.5\) is the FM modulator sensitivity.
+- \(f_s=32000\) samples/second.
+
+Therefore:
+
+\[
+\Delta f \approx 2546\text{ Hz}
+\]
+
+Using Carson's rule:
+
+\[
+BW\approx2(\Delta f+f_m)
+\]
+
+\[
+BW\approx2(2546+200)=5492\text{ Hz}
+\]
+
+The estimated FM bandwidth is approximately **5.5 kHz**.
+
+### FM Spectrum
+
+![FM Modulation Spectrum](fm%20modulation.png)
+
+### Observations
+
+- The FM spectrum contains multiple sidebands around the baseband center frequency.
+- Sideband spacing is approximately 200 Hz.
+- Most of the signal energy is concentrated within approximately ±3 kHz.
+- Increasing the FFT size from 1024 to 2048 improved frequency-bin spacing from 31.25 Hz to 15.625 Hz.
+
+### Result
+
+Successfully generated an FM signal and analyzed its spectrum using the GNU Radio QT GUI Frequency Sink.
+
+---
+
+## Experiment 6: FM Demodulation Using Quadrature Demod
+
+### Objective
+
+Recover the original 200 Hz message from a frequency-modulated signal using quadrature demodulation.
+
+### GNU Radio Configuration
+
+| Parameter | Value |
+|---|---|
+| Sample Rate | 32 kS/s |
+| Message Frequency | 200 Hz |
+| Message Amplitude | 1 |
+| FM Modulator Sensitivity | 0.5 |
+| Quadrature Demod Gain | 2 |
+| Time Sink Inputs | 2 |
+
+### Theory
+
+The FM modulator converts the message signal into instantaneous frequency variations.
+
+The Quadrature Demod block estimates the phase difference between consecutive complex samples to recover the original message.
+
+The demodulator gain is selected as the inverse of the modulator sensitivity:
+
+\[
+G=\frac{1}{0.5}=2
+\]
+
+Ideally, the recovered message is approximately:
+
+\[
+\hat m(t)\approx\cos(2\pi\cdot200t)
+\]
+
+### GNU Radio Flowgraph
+
+![FM Demodulation Flowgraph](fm%20demodulation%20flowgraph.png)
+
+### Demodulated Signal
+
+![FM Demodulation Result](fm%20demodulation.png)
+
+### Observations
+
+- The original and recovered messages have approximately the same frequency of 200 Hz.
+- The recovered amplitude is approximately ±1.
+- The waveforms overlap closely in the QT GUI Time Sink.
+- Quadrature demodulation successfully recovered the original message without requiring a separate synchronized carrier oscillator.
+
+### Result
+
+Successfully implemented FM modulation and quadrature demodulation in GNU Radio, recovering the original message signal with minimal visible distortion.
 
 ## Future Work
 - Multi-signal digital downconversion
