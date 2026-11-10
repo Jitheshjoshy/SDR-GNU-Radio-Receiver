@@ -338,11 +338,176 @@ Ideally, the recovered message is approximately:
 
 Successfully implemented FM modulation and quadrature demodulation in GNU Radio, recovering the original message signal with minimal visible distortion.
 
-## Future Work
-- Multi-signal digital downconversion
-- Signal bandwidth and spectral analysis
-- FM demodulation
-- RTL-SDR-based reception and measurements
+## Experiment 7: BPSK Modulation and Constellation Analysis
+
+### Objective
+
+Implement Binary Phase Shift Keying (BPSK) modulation using GNU Radio Companion and visualize the ideal BPSK constellation.
+
+### GNU Radio Flowgraph (.grc)
+
+**GNU Radio project file:** [bpsk_modulation.grc](bpsk_modulation.grc)
+
+### Flowgraph and Output Screenshot
+
+![BPSK Modulation Flowgraph and Constellation](BPSK%20const%20and%20flowgraph.png)
+
+### Configuration
+
+| Parameter | Value |
+|---|---|
+| Sample Rate | 32 kS/s |
+| Random Source | Binary values 0 and 1 |
+| Random Samples | 1000, repeated |
+| Char to Float Scale | 1 |
+| Multiply Const | 2 |
+| Add Const | -1 |
+| Quadrature Component (Q) | 0 |
+| Modulation | BPSK |
+
+### Theory
+
+Binary Phase Shift Keying (BPSK) represents digital information using two signal phases separated by 180 degrees.
+
+The binary-to-symbol mapping is:
+
+**s = 2b − 1**
+
+where `b` represents the transmitted bit.
+
+| Input Bit | BPSK Symbol | Phase |
+|---|---|---|
+| 0 | -1 | 180° |
+| 1 | +1 | 0° |
+
+The complex symbols are:
+
+**s ∈ {-1 + j0, +1 + j0}**
+
+### Flowgraph Explanation
+
+1. **Random Source:** Generates binary values 0 and 1.
+2. **Char to Float:** Converts the generated integer values into floating-point samples.
+3. **Multiply Const (2):** Multiplies each sample by 2.
+4. **Add Const (-1):** Converts binary values into BPSK symbols -1 and +1.
+5. **Float to Complex:** Places the BPSK symbols on the in-phase (I) axis, with Q = 0.
+6. **Throttle:** Controls the simulation sample rate.
+7. **QT GUI Constellation Sink:** Displays the BPSK symbols on the complex plane.
+
+### Observations
+
+- Two distinct constellation points appear at (-1, 0) and (+1, 0).
+- The quadrature component remains zero.
+- The constellation demonstrates the two possible BPSK symbol states.
+- The symbols are separated by 180 degrees in phase.
+
+### Result
+
+Successfully implemented BPSK modulation and visualized the ideal constellation in GNU Radio.
+
+**Files:**
+
+- [bpsk_modulation.grc](bpsk_modulation.grc)
+- [BPSK const and flowgraph.png](BPSK%20const%20and%20flowgraph.png)
+
+---
+
+## Experiment 8: BPSK Modulation Through an AWGN Channel
+
+### Objective
+
+Investigate the effect of additive white Gaussian noise (AWGN) on BPSK signals and observe how increasing noise affects the received constellation.
+
+### GNU Radio Flowgraph (.grc)
+
+**GNU Radio project file:** [bpsk_awgn_modulation.grc](bpsk_awgn_modulation.grc)
+
+The Channel Model block is inserted between the BPSK transmitter and the Constellation Sink.
+
+### Configuration
+
+| Parameter | Value |
+|---|---|
+| Sample Rate | 32 kS/s |
+| Modulation | BPSK |
+| Channel Model | AWGN |
+| Noise Voltage — Test 1 | 0.2 |
+| Noise Voltage — Test 2 | 0.8 |
+| Frequency Offset | 0 |
+| Epsilon | 1.0 |
+| Channel Taps | [1.0] |
+
+### Theory
+
+A received BPSK signal affected by AWGN can be represented as:
+
+**r = s + n**
+
+where:
+
+- `r` = received complex signal
+- `s` = transmitted BPSK symbol
+- `n` = additive complex Gaussian noise
+
+For the selected BPSK mapping, the receiver determines the transmitted bit using the in-phase component:
+
+- **I ≥ 0 → Bit 1**
+- **I < 0 → Bit 0**
+
+When noise moves a received symbol across the decision boundary at I = 0, a bit detection error may occur.
+
+### Test 1: Noise Voltage = 0.2
+
+#### GNU Radio Flowgraph and Noisy BPSK Constellation
+
+![BPSK AWGN Flowgraph and Constellation at Noise Voltage 0.2](noisy%20BPSK%20constellation.png)
+
+**Observations:**
+
+- The constellation displays two compact clusters around the ideal BPSK points.
+- Noise introduces variations in both the I and Q components.
+- The two symbol clusters remain clearly separated.
+- The expected probability of incorrect bit detection is relatively low.
+
+### Test 2: Noise Voltage = 0.8
+
+#### GNU Radio Output at Higher Noise
+
+![BPSK Constellation at Noise Voltage 0.8](noisebpsk.8.png)
+
+**Observations:**
+
+- The received constellation becomes significantly more spread out.
+- The two clusters overlap more strongly.
+- Some received symbols cross the decision boundary.
+- The expected bit error probability increases.
+
+### Comparison of Noise Levels
+
+| Observation | Noise Voltage = 0.2 | Noise Voltage = 0.8 |
+|---|---|---|
+| Constellation Spread | Small | Large |
+| Cluster Separation | Clear | Significant overlap |
+| Expected Bit Error Probability | Lower | Higher |
+| Signal Quality | Better | Worse |
+
+### Practical Relevance
+
+BPSK is used in digital communication systems, including satellite communication applications, because of its relatively simple detection process and robustness to noise.
+
+This experiment demonstrates how channel noise affects symbol detection and provides a foundation for receiver design and Bit Error Rate (BER) analysis.
+
+### Result
+
+Successfully simulated BPSK transmission through an AWGN channel and observed the effect of increasing noise on the received constellation.
+
+The actual BER has not yet been measured. This will be addressed in a subsequent BPSK receiver experiment.
+
+**Files:**
+
+- [bpsk_awgn_modulation.grc](bpsk_awgn_modulation.grc)
+- [noisy BPSK constellation.png](noisy%20BPSK%20constellation.png)
+- [noisebpsk.8.png](noisebpsk.8.png)
 
 ## Project Status
 Ongoing learning and experimental development.
