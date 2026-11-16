@@ -509,5 +509,72 @@ The actual BER has not yet been measured. This will be addressed in a subsequent
 - [noisy BPSK constellation.png](noisy%20BPSK%20constellation.png)
 - [noisebpsk.8.png](noisebpsk.8.png)
 
+## Experiment 6: BPSK Receiver and Bit Error Rate (BER) Analysis
+
+### Objective
+To implement a BPSK communication system in GNU Radio, simulate an Additive White Gaussian Noise (AWGN) channel, recover transmitted bits, and evaluate the Bit Error Rate (BER) using Python.
+
+### Tools Used
+- GNU Radio Companion (GRC)
+- Python
+- NumPy
+- Matplotlib
+
+### System Implementation
+The communication system consists of:
+
+1. **Bit Generation:** A random binary source generates transmitted bits.
+2. **BPSK Modulation:** Binary values are mapped to symbols −1 and +1.
+3. **AWGN Channel:** GNU Radio's Channel Model introduces adjustable noise.
+4. **BPSK Detection:** The real component of the received signal is passed through a Binary Slicer to recover binary bits.
+5. **Data Recording:** File Sink blocks save transmitted and received bits as binary files.
+6. **BER Analysis:** Python reads the recorded bits, aligns the sequences, counts bit errors, and calculates BER.
+
+### BER Calculation
+
+The Bit Error Rate is calculated as:
+
+**BER = Number of incorrectly detected bits / Total number of compared bits**
+
+During the zero-noise test, an alignment offset of 3 bits was identified and subsequently used for BER calculations.
+
+### Experimental Results
+
+| Noise Voltage | Bit Errors | Compared Bits | Measured BER |
+|---|---:|---:|---:|
+| 0.0 | 0 | 9992 | 0.000000 |
+| 0.2 | 0 | 9992 | 0.000000 |
+| 0.5 | 15 | 9992 | 0.001501 |
+| 0.8 | 426 | 9992 | 0.042634 |
+| 1.0 | 773 | 9992 | 0.077362 |
+
+### BER vs Noise Voltage
+
+![BPSK BER vs Noise Voltage](BPSK_BER_Analysis/bpsk_ber_vs_noise.png)
+
+### Observations
+
+- At low noise voltages, the BPSK receiver recovered all compared bits without errors.
+- Increasing the noise voltage caused the constellation clusters to spread and overlap.
+- As more symbols crossed the decision threshold, the measured BER increased.
+- The experiment demonstrates how AWGN affects the reliability of BPSK communication.
+
+### Project Files
+
+- [GNU Radio BPSK BER Flowgraph](BPSK_BER_Analysis/bpsk_ber.grc)
+- [Python BER Analysis](BPSK_BER_Analysis/bpsk_ber_analysis.py)
+- [Python BER Plotting](BPSK_BER_Analysis/bpsk_ber_plot.py)
+- [BER Graph](BPSK_BER_Analysis/bpsk_ber_vs_noise.png)
+
+### Key Learning Outcomes
+
+- BPSK modulation and demodulation
+- AWGN channel simulation
+- Binary Slicer operation and decision thresholds
+- Bit alignment and BER measurement
+- Python-based signal analysis and data visualization
+
+**Note:** These measurements use GNU Radio's noise-voltage parameter rather than a calibrated Eb/N0 sweep. Each BER value is an empirical measurement from approximately 10,000 compared bits.
+
 ## Project Status
 Ongoing learning and experimental development.
